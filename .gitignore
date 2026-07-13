@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+*.user
+
+# IDE
+.vs/
+.vscode/
+*.suo
+
+# Local artifacts
+*.log
+selftest_*.txt
+testinsert_*.txt
+
+# Never commit secrets or local settings
+settings.json
+*.key
