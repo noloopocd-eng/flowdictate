@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FlowDictate — speak in drafts, type the final</title>
+<title>FlowDictate â€” speak in drafts, type the final</title>
 <meta name="description" content="Hotkey-driven AI dictation for Windows. On-device speech recognition, Claude-powered cleanup, works in every app.">
 <style>
   :root {
@@ -233,7 +233,7 @@
     <nav>
       <a href="#how">How it works</a>
       <a href="#architecture">Architecture</a>
-      <a href="https://github.com/noloopocd-eng/-flowdictate">GitHub</a>
+      <a href="https://github.com/noloopocd-eng/flowdictate">GitHub</a>
     </nav>
   </header>
 </div>
@@ -241,12 +241,12 @@
 <div class="wrap hero">
   <span class="eyebrow">AI dictation for Windows</span>
   <h1>You speak in drafts.<br>It types the final.</h1>
-  <p class="lede">Hold a key anywhere in Windows and talk the way you actually talk — fillers, backtracking and all. Release, and writing-quality text lands at your cursor in about two seconds.</p>
+  <p class="lede">Hold a key anywhere in Windows and talk the way you actually talk â€” fillers, backtracking and all. Release, and writing-quality text lands at your cursor in about two seconds.</p>
 
   <div class="demo" id="demo" aria-label="Product demo: raw speech becoming clean text">
     <div class="demo-bar">
       <span class="pill" id="pill" data-state="idle"><span class="p-dot"></span><span id="pill-text">idle</span></span>
-      <span class="mono">any app · any text field</span>
+      <span class="mono">any app Â· any text field</span>
     </div>
     <div class="demo-body">
       <div class="raw" id="raw" aria-live="off"></div>
@@ -255,13 +255,13 @@
   </div>
 
   <div class="demo-hint">
-    <button class="kbd" id="replay" aria-label="Replay the demo">⇪&nbsp; CapsLock</button>
-    <span class="muted">Hold it — just like the real thing. (Or click to replay.)</span>
+    <button class="kbd" id="replay" aria-label="Replay the demo">â‡ª&nbsp; CapsLock</button>
+    <span class="muted">Hold it â€” just like the real thing. (Or click to replay.)</span>
   </div>
 
   <div class="cta-row">
-    <a class="btn primary" href="https://github.com/noloopocd-eng/-flowdictate">View the code</a>
-    <a class="btn ghost" href="https://github.com/noloopocd-eng/-flowdictate/blob/main/docs/case-study.md">Read the case study</a>
+    <a class="btn primary" href="https://github.com/noloopocd-eng/flowdictate">View the code</a>
+    <a class="btn ghost" href="https://github.com/noloopocd-eng/flowdictate/blob/main/docs/case-study.md">Read the case study</a>
   </div>
 </div>
 
@@ -270,11 +270,11 @@
     <span class="eyebrow">What it does</span>
     <h2>Transcription is the easy part.<br>The product is the cleanup.</h2>
     <div class="grid">
-      <div class="card"><span class="tag">Input</span><h3>One held key, everywhere</h3><p>Hold CapsLock to talk, release to insert — in Word, Outlook, Slack, VS Code, any browser field. Double-tap for hands-free. Shift+CapsLock keeps normal caps.</p></div>
-      <div class="card"><span class="tag">Privacy</span><h3>Voice never leaves the machine</h3><p>Speech recognition runs on-device with whisper.cpp. Only the resulting text is sent for cleanup — and there's a fully offline fallback.</p></div>
-      <div class="card"><span class="tag">Intelligence</span><h3>Speech-to-writing, not speech-to-text</h3><p>A fast Claude pass strips fillers, punctuates, and resolves self-corrections: &ldquo;Tuesday — wait, no, Friday&rdquo; becomes just &ldquo;Friday.&rdquo;</p></div>
+      <div class="card"><span class="tag">Input</span><h3>One held key, everywhere</h3><p>Hold CapsLock to talk, release to insert â€” in Word, Outlook, Slack, VS Code, any browser field. Double-tap for hands-free. Shift+CapsLock keeps normal caps.</p></div>
+      <div class="card"><span class="tag">Privacy</span><h3>Voice never leaves the machine</h3><p>Speech recognition runs on-device with whisper.cpp. Only the resulting text is sent for cleanup â€” and there's a fully offline fallback.</p></div>
+      <div class="card"><span class="tag">Intelligence</span><h3>Speech-to-writing, not speech-to-text</h3><p>A fast Claude pass strips fillers, punctuates, and resolves self-corrections: &ldquo;Tuesday â€” wait, no, Friday&rdquo; becomes just &ldquo;Friday.&rdquo;</p></div>
       <div class="card"><span class="tag">Editing</span><h3>Voice commands on selected text</h3><p>Select a sentence, hold the key, say &ldquo;make this more concise.&rdquo; The selection is rewritten in place.</p></div>
-      <div class="card"><span class="tag">Context</span><h3>Knows where it's typing</h3><p>Formal register in Outlook, casual in Slack — a configurable per-app tone map. Plus a custom dictionary for names and jargon.</p></div>
+      <div class="card"><span class="tag">Context</span><h3>Knows where it's typing</h3><p>Formal register in Outlook, casual in Slack â€” a configurable per-app tone map. Plus a custom dictionary for names and jargon.</p></div>
       <div class="card"><span class="tag">Trust</span><h3>Fails to nothing, never to garbage</h3><p>Silence gates keep hallucinated text out of your documents. API down? It degrades to offline cleanup instead of breaking.</p></div>
     </div>
   </div>
@@ -285,9 +285,9 @@
     <span class="eyebrow">How it works</span>
     <h2>Three beats, two seconds.</h2>
     <div class="steps">
-      <div class="step"><span class="n">01 · HOLD</span><h3>Hold CapsLock</h3><p>A small pill appears — red and pulsing. It's listening. A 0.4s audio pre-roll means your first word is never clipped.</p></div>
-      <div class="step"><span class="n">02 · SPEAK</span><h3>Talk naturally</h3><p>Fillers, false starts, changing your mind mid-sentence — say it how you think it. That's the point.</p></div>
-      <div class="step"><span class="n">03 · RELEASE</span><h3>Get writing</h3><p>Blue: transcribing and cleaning. Green: inserted at your cursor. Clean, punctuated, in the right tone for the app you're in.</p></div>
+      <div class="step"><span class="n">01 Â· HOLD</span><h3>Hold CapsLock</h3><p>A small pill appears â€” red and pulsing. It's listening. A 0.4s audio pre-roll means your first word is never clipped.</p></div>
+      <div class="step"><span class="n">02 Â· SPEAK</span><h3>Talk naturally</h3><p>Fillers, false starts, changing your mind mid-sentence â€” say it how you think it. That's the point.</p></div>
+      <div class="step"><span class="n">03 Â· RELEASE</span><h3>Get writing</h3><p>Blue: transcribing and cleaning. Green: inserted at your cursor. Clean, punctuated, in the right tone for the app you're in.</p></div>
     </div>
   </div>
 </section>
@@ -311,46 +311,46 @@
     <div class="arch-scroll">
       <div class="arch">
         <div class="zone local">
-          <div class="zone-label">On this PC — audio never leaves</div>
+          <div class="zone-label">On this PC â€” audio never leaves</div>
           <div class="nodes">
             <div class="node"><b>Hotkey</b>low-level keyboard hook</div>
-            <span class="arrow">→</span>
-            <div class="node"><b>Mic capture</b>hot stream · pre-roll · silence gates</div>
-            <span class="arrow">→</span>
+            <span class="arrow">â†’</span>
+            <div class="node"><b>Mic capture</b>hot stream Â· pre-roll Â· silence gates</div>
+            <span class="arrow">â†’</span>
             <div class="node"><b>Whisper</b>on-device transcription</div>
           </div>
         </div>
         <div class="boundary"><div class="rule"></div><div class="lab">only text crosses</div><div class="rule"></div></div>
         <div class="zone cloud">
-          <div class="zone-label">Cloud — one short API call</div>
+          <div class="zone-label">Cloud â€” one short API call</div>
           <div class="nodes">
-            <div class="node"><b>Claude cleanup</b>fillers · punctuation · self-corrections · tone</div>
-            <span class="arrow">→</span>
+            <div class="node"><b>Claude cleanup</b>fillers Â· punctuation Â· self-corrections Â· tone</div>
+            <span class="arrow">â†’</span>
             <div class="node"><b>Insert at cursor</b>UI Automation, clipboard fallback</div>
           </div>
         </div>
       </div>
     </div>
-    <p class="arch-note">Every stage sits behind an interface — the local model, the cleanup provider, and the insertion strategy are each swappable. If the API is unreachable, an offline rule-based cleaner takes over and the tool keeps working. Built in C# / .NET 8 with NAudio, Whisper.net and the Anthropic SDK.</p>
+    <p class="arch-note">Every stage sits behind an interface â€” the local model, the cleanup provider, and the insertion strategy are each swappable. If the API is unreachable, an offline rule-based cleaner takes over and the tool keeps working. Built in C# / .NET 8 with NAudio, Whisper.net and the Anthropic SDK.</p>
   </div>
 </section>
 
 <section id="cta">
   <div class="wrap">
-    <span class="eyebrow">Try it · fork it · read it</span>
+    <span class="eyebrow">Try it Â· fork it Â· read it</span>
     <h2>Open source, MIT, and documented like a product.</h2>
     <p class="lede">Architecture deep-dive, a product case study, and per-feature decision docs live alongside the code.</p>
     <div class="cta-row">
-      <a class="btn primary" href="https://github.com/noloopocd-eng/-flowdictate">Get FlowDictate on GitHub</a>
-      <a class="btn ghost" href="https://github.com/noloopocd-eng/-flowdictate/blob/main/docs/architecture.md">Architecture docs</a>
+      <a class="btn primary" href="https://github.com/noloopocd-eng/flowdictate">Get FlowDictate on GitHub</a>
+      <a class="btn ghost" href="https://github.com/noloopocd-eng/flowdictate/blob/main/docs/architecture.md">Architecture docs</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span>FlowDictate — a portfolio project by Shruti · MIT License</span>
-    <span>Built with .NET 8 · whisper.cpp · Claude</span>
+    <span>FlowDictate â€” a portfolio project by Shruti Â· MIT License</span>
+    <span>Built with .NET 8 Â· whisper.cpp Â· Claude</span>
   </div>
 </footer>
 
@@ -366,8 +366,8 @@
   // Raw transcript, segmented so fillers and the self-correction can be struck.
   var segs = [
     { t: 'um, ', c: 'flt' },
-    { t: 'let’s meet on ' },
-    { t: 'tuesday— wait, no, ', c: 'corr' },
+    { t: 'letâ€™s meet on ' },
+    { t: 'tuesdayâ€” wait, no, ', c: 'corr' },
     { t: 'friday at 3pm to discuss the, ' },
     { t: 'you know, ', c: 'flt' },
     { t: 'quarterly report' }
@@ -391,7 +391,7 @@
       raw.appendChild(span);
     });
     clean.classList.add('show');
-    setPill('done', 'Inserted ✓');
+    setPill('done', 'Inserted âœ“');
   }
 
   function play() {
@@ -399,7 +399,7 @@
     if (reduced) { finalState(); return; }
     raw.innerHTML = '';
     clean.classList.remove('show');
-    setPill('listen', 'Listening…');
+    setPill('listen', 'Listeningâ€¦');
 
     // 1. type the raw transcript
     var spans = segs.map(function (s) {
@@ -419,14 +419,14 @@
 
     function afterTyping() {
       later(function () {
-        setPill('process', 'Processing…');
+        setPill('process', 'Processingâ€¦');
         var marks = raw.querySelectorAll('.flt, .corr');
         marks.forEach(function (m, i) {
           later(function () { m.classList.add('struck'); }, 260 * (i + 1));
         });
         later(function () {
           clean.classList.add('show');
-          setPill('done', 'Inserted ✓');
+          setPill('done', 'Inserted âœ“');
         }, 260 * (marks.length + 1) + 500);
       }, 420);
     }
