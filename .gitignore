@@ -16,3 +16,6 @@ testinsert_*.txt
 # Never commit secrets or local settings
 settings.json
 *.key
+
+# Unrelated sibling project
+speakcoach/
