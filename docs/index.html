@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowDictate — speak in drafts, type the final</title>
+<meta name="description" content="Hotkey-driven AI dictation for Windows. On-device speech recognition, Claude-powered cleanup, works in every app.">
+<style>
+  :root {
+    --paper: #FAF9F7;
+    --ink: #1F2024;
+    --muted: #66676D;
+    --line: #E4E2DC;
+    --panel: #F1F0EB;
+    --accent: #D6453D;
+    --on-accent: #FFFFFF;
+    --blue: #3F6FC4;
+    --green: #35855A;
+    --shadow: 0 1px 2px rgba(30,30,35,.06), 0 8px 28px rgba(30,30,35,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #17181C;
+      --ink: #EAE9E5;
+      --muted: #9A9BA1;
+      --line: #2B2D33;
+      --panel: #1F2127;
+      --accent: #E8564D;
+      --on-accent: #17181C;
+      --blue: #7AA0E8;
+      --green: #5FBB82;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 32px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #FAF9F7; --ink: #1F2024; --muted: #66676D; --line: #E4E2DC; --panel: #F1F0EB;
+    --accent: #D6453D; --on-accent: #FFFFFF; --blue: #3F6FC4; --green: #35855A;
+    --shadow: 0 1px 2px rgba(30,30,35,.06), 0 8px 28px rgba(30,30,35,.07);
+  }
+  :root[data-theme="dark"] {
+    --paper: #17181C; --ink: #EAE9E5; --muted: #9A9BA1; --line: #2B2D33; --panel: #1F2127;
+    --accent: #E8564D; --on-accent: #17181C; --blue: #7AA0E8; --green: #5FBB82;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 32px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .serif { font-family: Georgia, "Times New Roman", serif; }
+  .mono  { font-family: Consolas, "Cascadia Mono", ui-monospace, monospace; }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 72px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: none; }
+
+  .eyebrow {
+    font-family: Consolas, ui-monospace, monospace;
+    font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 500; text-wrap: balance; margin: 10px 0 14px; }
+  h1 { font-size: clamp(38px, 6vw, 58px); line-height: 1.08; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; }
+  p.lede { font-size: 19px; color: var(--muted); max-width: 34em; }
+  p { max-width: 40em; }
+  .muted { color: var(--muted); }
+  a { color: inherit; }
+
+  /* ---------- header ---------- */
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .01em; }
+  .logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 22px; font-size: 15px; }
+  nav a:hover, nav a:focus-visible { color: var(--ink); }
+
+  /* ---------- hero demo ---------- */
+  .hero { padding: 56px 0 84px; }
+  .demo {
+    margin-top: 44px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .demo-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    font-size: 13px; color: var(--muted);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 12px; border-radius: 999px;
+    background: var(--paper); border: 1px solid var(--line);
+    font-family: Consolas, ui-monospace, monospace; font-size: 12.5px;
+    min-width: 132px;
+  }
+  .pill .p-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
+  .pill[data-state="listen"]  .p-dot { background: var(--accent); animation: pulse 1s infinite; }
+  .pill[data-state="process"] .p-dot { background: var(--blue); }
+  .pill[data-state="done"]    .p-dot { background: var(--green); }
+  @keyframes pulse { 50% { opacity: .25; } }
+
+  .demo-body { padding: 26px 26px 30px; display: grid; gap: 20px; }
+  .raw {
+    font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+    font-size: 15.5px; line-height: 1.75; color: var(--muted);
+    min-height: 3.2em;
+  }
+  .raw .flt, .raw .corr { transition: opacity .5s, color .5s; }
+  .raw .struck { text-decoration: line-through; text-decoration-color: var(--accent); opacity: .38; }
+  .clean {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(20px, 3vw, 26px); line-height: 1.4;
+    min-height: 2.4em;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity .7s, transform .7s;
+  }
+  .clean.show { opacity: 1; transform: none; }
+  .caret { display: inline-block; width: 2px; height: 1em; background: var(--accent); vertical-align: -0.12em; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .demo-hint { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
+  .kbd {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: Consolas, ui-monospace, monospace; font-size: 14px;
+    border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 8px;
+    background: var(--panel); color: var(--ink);
+    padding: 10px 18px; cursor: pointer; user-select: none;
+    transition: transform .06s, border-bottom-width .06s;
+  }
+  .kbd:active, .kbd.held { transform: translateY(2px); border-bottom-width: 1px; }
+  .kbd:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+  .btn {
+    display: inline-block; text-decoration: none; border-radius: 8px;
+    padding: 12px 22px; font-size: 16px; font-weight: 600;
+  }
+  .btn.primary { background: var(--accent); color: var(--on-accent); }
+  .btn.primary:hover { filter: brightness(1.06); }
+  .btn.ghost { border: 1px solid var(--line); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--muted); }
+
+  /* ---------- features ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 36px; }
+  .card {
+    border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+    padding: 22px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 17px; }
+  .card p { margin: 0; font-size: 15px; color: var(--muted); }
+  .card .tag {
+    font-family: Consolas, ui-monospace, monospace; font-size: 11.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 10px;
+  }
+
+  /* ---------- how it works ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 36px; }
+  .step { border-left: 3px solid var(--accent); padding: 4px 0 4px 20px; }
+  .step .n { font-family: Consolas, ui-monospace, monospace; color: var(--accent); font-size: 13px; letter-spacing: .12em; }
+  .step h3 { margin: 6px 0 6px; font-size: 18px; }
+  .step p { margin: 0; font-size: 15px; color: var(--muted); }
+
+  /* ---------- screenshots ---------- */
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 36px; }
+  .shot {
+    border: 1px dashed var(--muted); border-radius: 10px; overflow: hidden; background: var(--panel);
+  }
+  .shot .chrome {
+    display: flex; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--line);
+  }
+  .shot .chrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .shot .ph {
+    aspect-ratio: 16/10; display: grid; place-items: center; text-align: center;
+    color: var(--muted); font-size: 14px; padding: 18px;
+  }
+
+  /* ---------- architecture ---------- */
+  .arch-scroll { overflow-x: auto; margin-top: 36px; padding-bottom: 8px; }
+  .arch { display: flex; align-items: stretch; gap: 0; min-width: 720px; }
+  .zone { border: 1px solid var(--line); border-radius: 12px; padding: 18px; flex: 1; }
+  .zone.local { background: var(--panel); }
+  .zone-label {
+    font-family: Consolas, ui-monospace, monospace; font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .zone.local .zone-label { color: var(--green); }
+  .zone.cloud .zone-label { color: var(--blue); }
+  .nodes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .node {
+    border: 1px solid var(--line); background: var(--paper); border-radius: 8px;
+    padding: 10px 12px; font-size: 13.5px; line-height: 1.35;
+  }
+  .node b { display: block; font-size: 14px; }
+  .arrow { color: var(--muted); font-size: 18px; flex: none; }
+  .boundary {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 14px; flex: none;
+  }
+  .boundary .rule { width: 1px; flex: 1; border-left: 2px dashed var(--accent); }
+  .boundary .lab {
+    font-family: Consolas, ui-monospace, monospace; font-size: 11px; letter-spacing: .08em;
+    color: var(--accent); text-transform: uppercase; padding: 8px 0; text-align: center; max-width: 90px;
+  }
+  .arch-note { margin-top: 18px; font-size: 15px; color: var(--muted); max-width: 44em; }
+
+  /* ---------- footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 42px 0 64px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="site">
+    <div class="logo"><span class="dot"></span> FlowDictate</div>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#architecture">Architecture</a>
+      <a href="https://github.com/noloopocd-eng/-flowdictate">GitHub</a>
+    </nav>
+  </header>
+</div>
+
+<div class="wrap hero">
+  <span class="eyebrow">AI dictation for Windows</span>
+  <h1>You speak in drafts.<br>It types the final.</h1>
+  <p class="lede">Hold a key anywhere in Windows and talk the way you actually talk — fillers, backtracking and all. Release, and writing-quality text lands at your cursor in about two seconds.</p>
+
+  <div class="demo" id="demo" aria-label="Product demo: raw speech becoming clean text">
+    <div class="demo-bar">
+      <span class="pill" id="pill" data-state="idle"><span class="p-dot"></span><span id="pill-text">idle</span></span>
+      <span class="mono">any app · any text field</span>
+    </div>
+    <div class="demo-body">
+      <div class="raw" id="raw" aria-live="off"></div>
+      <div class="clean" id="clean">Let&rsquo;s meet on Friday at 3pm to discuss the quarterly report.<span class="caret"></span></div>
+    </div>
+  </div>
+
+  <div class="demo-hint">
+    <button class="kbd" id="replay" aria-label="Replay the demo">⇪&nbsp; CapsLock</button>
+    <span class="muted">Hold it — just like the real thing. (Or click to replay.)</span>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn primary" href="https://github.com/noloopocd-eng/-flowdictate">View the code</a>
+    <a class="btn ghost" href="https://github.com/noloopocd-eng/-flowdictate/blob/main/docs/case-study.md">Read the case study</a>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <span class="eyebrow">What it does</span>
+    <h2>Transcription is the easy part.<br>The product is the cleanup.</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">Input</span><h3>One held key, everywhere</h3><p>Hold CapsLock to talk, release to insert — in Word, Outlook, Slack, VS Code, any browser field. Double-tap for hands-free. Shift+CapsLock keeps normal caps.</p></div>
+      <div class="card"><span class="tag">Privacy</span><h3>Voice never leaves the machine</h3><p>Speech recognition runs on-device with whisper.cpp. Only the resulting text is sent for cleanup — and there's a fully offline fallback.</p></div>
+      <div class="card"><span class="tag">Intelligence</span><h3>Speech-to-writing, not speech-to-text</h3><p>A fast Claude pass strips fillers, punctuates, and resolves self-corrections: &ldquo;Tuesday — wait, no, Friday&rdquo; becomes just &ldquo;Friday.&rdquo;</p></div>
+      <div class="card"><span class="tag">Editing</span><h3>Voice commands on selected text</h3><p>Select a sentence, hold the key, say &ldquo;make this more concise.&rdquo; The selection is rewritten in place.</p></div>
+      <div class="card"><span class="tag">Context</span><h3>Knows where it's typing</h3><p>Formal register in Outlook, casual in Slack — a configurable per-app tone map. Plus a custom dictionary for names and jargon.</p></div>
+      <div class="card"><span class="tag">Trust</span><h3>Fails to nothing, never to garbage</h3><p>Silence gates keep hallucinated text out of your documents. API down? It degrades to offline cleanup instead of breaking.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h2>Three beats, two seconds.</h2>
+    <div class="steps">
+      <div class="step"><span class="n">01 · HOLD</span><h3>Hold CapsLock</h3><p>A small pill appears — red and pulsing. It's listening. A 0.4s audio pre-roll means your first word is never clipped.</p></div>
+      <div class="step"><span class="n">02 · SPEAK</span><h3>Talk naturally</h3><p>Fillers, false starts, changing your mind mid-sentence — say it how you think it. That's the point.</p></div>
+      <div class="step"><span class="n">03 · RELEASE</span><h3>Get writing</h3><p>Blue: transcribing and cleaning. Green: inserted at your cursor. Clean, punctuated, in the right tone for the app you're in.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="screenshots">
+  <div class="wrap">
+    <span class="eyebrow">In the wild</span>
+    <h2>Small surface, no windows to manage.</h2>
+    <div class="shots">
+      <div class="shot"><div class="chrome"><i></i><i></i><i></i></div><div class="ph">Screenshot placeholder<br>Status pill while dictating into Outlook</div></div>
+      <div class="shot"><div class="chrome"><i></i><i></i><i></i></div><div class="ph">Screenshot placeholder<br>&ldquo;Turn this into bullet points&rdquo; on a selection</div></div>
+      <div class="shot"><div class="chrome"><i></i><i></i><i></i></div><div class="ph">Screenshot placeholder<br>Tray menu &amp; settings</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <span class="eyebrow">Technical architecture</span>
+    <h2>The pipeline splits exactly at the privacy boundary.</h2>
+    <div class="arch-scroll">
+      <div class="arch">
+        <div class="zone local">
+          <div class="zone-label">On this PC — audio never leaves</div>
+          <div class="nodes">
+            <div class="node"><b>Hotkey</b>low-level keyboard hook</div>
+            <span class="arrow">→</span>
+            <div class="node"><b>Mic capture</b>hot stream · pre-roll · silence gates</div>
+            <span class="arrow">→</span>
+            <div class="node"><b>Whisper</b>on-device transcription</div>
+          </div>
+        </div>
+        <div class="boundary"><div class="rule"></div><div class="lab">only text crosses</div><div class="rule"></div></div>
+        <div class="zone cloud">
+          <div class="zone-label">Cloud — one short API call</div>
+          <div class="nodes">
+            <div class="node"><b>Claude cleanup</b>fillers · punctuation · self-corrections · tone</div>
+            <span class="arrow">→</span>
+            <div class="node"><b>Insert at cursor</b>UI Automation, clipboard fallback</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="arch-note">Every stage sits behind an interface — the local model, the cleanup provider, and the insertion strategy are each swappable. If the API is unreachable, an offline rule-based cleaner takes over and the tool keeps working. Built in C# / .NET 8 with NAudio, Whisper.net and the Anthropic SDK.</p>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <span class="eyebrow">Try it · fork it · read it</span>
+    <h2>Open source, MIT, and documented like a product.</h2>
+    <p class="lede">Architecture deep-dive, a product case study, and per-feature decision docs live alongside the code.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/noloopocd-eng/-flowdictate">Get FlowDictate on GitHub</a>
+      <a class="btn ghost" href="https://github.com/noloopocd-eng/-flowdictate/blob/main/docs/architecture.md">Architecture docs</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>FlowDictate — a portfolio project by Shruti · MIT License</span>
+    <span>Built with .NET 8 · whisper.cpp · Claude</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var raw = document.getElementById('raw');
+  var clean = document.getElementById('clean');
+  var pill = document.getElementById('pill');
+  var pillText = document.getElementById('pill-text');
+  var btn = document.getElementById('replay');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Raw transcript, segmented so fillers and the self-correction can be struck.
+  var segs = [
+    { t: 'um, ', c: 'flt' },
+    { t: 'let’s meet on ' },
+    { t: 'tuesday— wait, no, ', c: 'corr' },
+    { t: 'friday at 3pm to discuss the, ' },
+    { t: 'you know, ', c: 'flt' },
+    { t: 'quarterly report' }
+  ];
+
+  var timers = [];
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function clearAll() { timers.forEach(clearTimeout); timers = []; }
+
+  function setPill(state, label) {
+    pill.setAttribute('data-state', state);
+    pillText.textContent = label;
+  }
+
+  function finalState() {
+    raw.innerHTML = '';
+    segs.forEach(function (s) {
+      var span = document.createElement('span');
+      span.textContent = s.t;
+      if (s.c) { span.className = s.c + ' struck'; }
+      raw.appendChild(span);
+    });
+    clean.classList.add('show');
+    setPill('done', 'Inserted ✓');
+  }
+
+  function play() {
+    clearAll();
+    if (reduced) { finalState(); return; }
+    raw.innerHTML = '';
+    clean.classList.remove('show');
+    setPill('listen', 'Listening…');
+
+    // 1. type the raw transcript
+    var spans = segs.map(function (s) {
+      var span = document.createElement('span');
+      if (s.c) span.className = s.c;
+      raw.appendChild(span);
+      return span;
+    });
+    var si = 0, ci = 0, t = 0, speed = 26;
+    (function typeNext() {
+      if (si >= segs.length) { afterTyping(); return; }
+      spans[si].textContent += segs[si].t.charAt(ci);
+      ci++;
+      if (ci >= segs[si].t.length) { si++; ci = 0; }
+      later(typeNext, speed);
+    })();
+
+    function afterTyping() {
+      later(function () {
+        setPill('process', 'Processing…');
+        var marks = raw.querySelectorAll('.flt, .corr');
+        marks.forEach(function (m, i) {
+          later(function () { m.classList.add('struck'); }, 260 * (i + 1));
+        });
+        later(function () {
+          clean.classList.add('show');
+          setPill('done', 'Inserted ✓');
+        }, 260 * (marks.length + 1) + 500);
+      }, 420);
+    }
+  }
+
+  // Hold-to-talk on the fake CapsLock: press = listen, release = process.
+  var holding = false;
+  btn.addEventListener('pointerdown', function () { holding = true; btn.classList.add('held'); });
+  btn.addEventListener('pointerup', function () {
+    if (holding) { holding = false; btn.classList.remove('held'); play(); }
+  });
+  btn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); }
+  });
+
+  later(play, 600);
+})();
+</script>
+
+</body>
+</html>
