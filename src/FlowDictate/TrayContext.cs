@@ -15,7 +15,10 @@ public sealed class TrayContext : ApplicationContext
     private readonly AppSettings _settings;
     private readonly DictationPipeline _pipeline;
 
-    private string IdleText => $"FlowDictate — idle (hold {_settings.HotkeyName} to talk)";
+    private static readonly string Version =
+        typeof(TrayContext).Assembly.GetName().Version?.ToString(3) ?? "dev";
+
+    private string IdleText => $"FlowDictate {Version} — hold {_settings.HotkeyName} to talk";
 
     public TrayContext()
     {

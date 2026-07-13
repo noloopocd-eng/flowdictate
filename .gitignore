@@ -19,3 +19,11 @@ settings.json
 
 # Unrelated sibling project
 speakcoach/
+
+# Release archives
+*.zip
+src/FlowDictate/publish/
+
+# Other local projects / harness config
+career-intelligence-os/
+.claude/

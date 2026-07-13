@@ -1,5 +1,9 @@
 # FlowDictate 🎤
 
+[![build](https://github.com/noloopocd-eng/flowdictate/actions/workflows/build.yml/badge.svg)](https://github.com/noloopocd-eng/flowdictate/actions/workflows/build.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
+
 **Press a key anywhere in Windows. Speak. Release. Clean, polished text appears at your cursor — in under two seconds.**
 
 A hotkey-driven AI dictation tool for Windows, inspired by [Wispr Flow](https://wisprflow.ai). Speech recognition runs **fully on-device** (whisper.cpp); a fast Claude pass turns raw speech into writing-quality text — filler words removed, punctuation added, self-corrections resolved ("Tuesday, wait no, Friday" → "Friday").

@@ -10,6 +10,12 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>FlowDictate</AssemblyName>
     <RootNamespace>FlowDictate</RootNamespace>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <Product>FlowDictate</Product>
+    <Authors>Shruti</Authors>
+    <Description>Hotkey-driven AI dictation for Windows: on-device Whisper transcription, Claude-powered cleanup, works in every app.</Description>
+    <Copyright>© 2026 Shruti · MIT License</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
